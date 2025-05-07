@@ -1,6 +1,10 @@
+lib = File.expand_path("lib", __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require "jekyll-esbuild/version"
+
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-esbuild"
-  spec.version       = "0.1.0"
+  spec.version       = Jekyll::Esbuild::VERSION
   spec.authors       = ["Samuel Ochoa"]
   spec.email         = ["samuelochoap@proton.me"]
 
