@@ -12,7 +12,9 @@ Gem::Specification.new do |spec|
     "license" => "https://unlicense.org/"
   }
 
-  spec.files         = Dir["{lib}/**/*", "*.md", "LICENSE", "jekyll-esbuild.rb"]
+  spec.files         = Dir.chdir(File.expand_path(__dir__)) do
+                         `git ls-files -z`.split("\x0")
+                       end
   spec.require_paths = ["lib"]
 
   spec.add_dependency "open3"
