@@ -9,8 +9,8 @@ module Jekyll
     class Engine
       def initialize(source, options = {})
         Jekyll.logger.debug "JekyllEsbuild:",
-                           "Initializing enginge with source:
-                            #{source}, options: #{options}"
+                            "Initializing engine with source:
+                             #{source}, options: #{options}"
         @script = File.expand_path(options[:script] || 'node_modules/.bin/esbuild', source)
         unless File.exist?(@script)
           Jekyll.logger.error "JekyllEsbuild:",
@@ -46,7 +46,7 @@ module Jekyll
 end
 
 Jekyll::Hooks.register :site, :post_write do |site|
-  Jekyll.logger.debug "JekyllEsbuild:", "Post write hook triggered."
+  Jekyll.logger.debug "JekyllEsbuild:", "Site post-write hook triggered."
 
   engine = Jekyll::Esbuild::Engine.new(site.source, {
     script: site.config.dig('esbuild', 'script'),
@@ -67,5 +67,5 @@ Jekyll::Hooks.register :site, :post_write do |site|
     engine.process(file_path)
   end
 
-  Jekyll.logger.debug "JekyllEsbuild:", "Post write hook completed."
+  Jekyll.logger.debug "JekyllEsbuild:", "Site post-write hook completed."
 end
