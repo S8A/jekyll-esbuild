@@ -8,7 +8,7 @@ module Jekyll
   module Esbuild
     class Engine
       def initialize(source, options = {})
-        Jekyll.logger.info "JekyllEsbuild:",
+        Jekyll.logger.debug "JekyllEsbuild:",
                            "Initializing enginge with source:
                             #{source}, options: #{options}"
         @script = File.expand_path(options[:script] || 'node_modules/.bin/esbuild', source)
@@ -27,8 +27,9 @@ module Jekyll
 
       def process(static_file)
         file_path = Pathname.new(static_file.destination(static_file.site.dest))
-        Jekyll.logger.info "JekyllEsbuild:",
-                           "Processing file: #{file_path}"
+
+        Jekyll.logger.debug "JekyllEsbuild:", "Processing #{file_path}"
+
         args = [@script, file_path, "--outfile=#{file_path}"]
         args << '--bundle' if @bundle
         args << '--minify' if @minify == 'always' || (@minify == 'environment' && ENV['NODE_ENV'] == 'production')
@@ -36,10 +37,10 @@ module Jekyll
 
         stdout, stderr, status = Open3.capture3(*args)
         unless status.success?
-          Jekyll.logger.error "JekyllEsbuild:",
-                              "Failed with error: #{stderr}"
+          Jekyll.logger.error "JekyllEsbuild:", "Failed with error: #{stderr}"
           raise "Esbuild failed with status #{status.exitstatus}"
         end
+
         Jekyll.logger.info "JekyllEsbuild:", "Processed #{file_path}"
       end
     end
@@ -47,8 +48,8 @@ module Jekyll
 end
 
 Jekyll::Hooks.register :site, :post_write do |site|
-  Jekyll.logger.info "JekyllEsbuild:",
-                     "Post write hook triggered."
+  Jekyll.logger.debug "JekyllEsbuild:", "Post write hook triggered."
+
   engine = Jekyll::Esbuild::Engine.new(site.source, {
     script: site.config.dig('esbuild', 'script'),
     bundle: site.config.dig('esbuild', 'bundle'),
@@ -61,8 +62,10 @@ Jekyll::Hooks.register :site, :post_write do |site|
   site.static_files.each do |static_file|
     relative_path = static_file.relative_path
 
-    next unless fies.nil? ? relative_path.end_with?('.js') : files.include?(relative_path)
+    next unless files.nil? ? relative_path.end_with?('.js') : files.include?(relative_path)
 
     engine.process(static_file)
   end
+
+  Jekyll.logger.debug "JekyllEsbuild:", "Post write hook completed."
 end
