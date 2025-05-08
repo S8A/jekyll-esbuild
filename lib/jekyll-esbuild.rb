@@ -28,7 +28,7 @@ module Jekyll
       def process(file_path)
         Jekyll.logger.debug "JekyllEsbuild:", "Processing #{file_path}"
 
-        args = [@script, file_path, "--outfile=#{file_path}"]
+        args = [@script, "#{file_path}", "--outfile=#{file_path}"]
         args << '--bundle' if @bundle
         args << '--minify' if @minify == 'always' || (@minify == 'environment' && ENV['NODE_ENV'] == 'production')
         args << "--sourcemap=#{@sourcemap}" unless @sourcemap == 'none'
