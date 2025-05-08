@@ -25,9 +25,7 @@ module Jekyll
         @sourcemap = options.fetch(:sourcemap, 'none')
       end
 
-      def process(static_file)
-        file_path = Pathname.new(static_file.destination(static_file.site.dest))
-
+      def process(file_path)
         Jekyll.logger.debug "JekyllEsbuild:", "Processing #{file_path}"
 
         args = [@script, file_path, "--outfile=#{file_path}"]
@@ -64,7 +62,9 @@ Jekyll::Hooks.register :site, :post_write do |site|
 
     next unless files.nil? ? relative_path.end_with?('.js') : files.include?(relative_path)
 
-    engine.process(static_file)
+    file_path = Pathname.new(static_file.destination(site.dest))
+
+    engine.process(file_path)
   end
 
   Jekyll.logger.debug "JekyllEsbuild:", "Post write hook completed."
