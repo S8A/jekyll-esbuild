@@ -22,16 +22,24 @@ module Jekyll
 
         @bundle = options.fetch(:bundle, true)
         @minify = options.fetch(:minify, 'environment')
-        @sourcemap = options.fetch(:sourcemap, 'none')
+        @sourcemap = options.fetch(:sourcemap, 'environment')
       end
 
       def process(file_path)
         Jekyll.logger.debug "JekyllEsbuild:", "Processing #{file_path}"
 
+        node_env = ENV.fetch('NODE_ENV', 'development')
+
         args = [@script, "#{file_path}", "--outfile=#{file_path}", "--allow-overwrite"]
         args << '--bundle' if @bundle
-        args << '--minify' if @minify == 'always' || (@minify == 'environment' && ENV['NODE_ENV'] == 'production')
-        args << "--sourcemap=#{@sourcemap}" unless @sourcemap == 'none'
+
+        if @minify == 'always' || (@minify == 'environment' && node_env == 'production')
+          args << '--minify'
+        end
+
+        if @sourcemap == 'always' || (@sourcemap == 'environment' && node_env == 'development')
+          args << "--sourcemap"
+        end
 
         stdout, stderr, status = Open3.capture3(*args)
         unless status.success?
