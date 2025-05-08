@@ -1,10 +1,6 @@
-lib = File.expand_path("lib", __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "jekyll-esbuild/version"
-
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-esbuild"
-  spec.version       = Jekyll::Esbuild::VERSION
+  spec.version       = "0.1.0"
   spec.authors       = ["Samuel Ochoa"]
   spec.email         = ["samuelochoap@proton.me"]
 
@@ -16,9 +12,7 @@ Gem::Specification.new do |spec|
     "license" => "https://unlicense.org/"
   }
 
-  spec.files         = Dir.chdir(File.expand_path(__dir__)) do
-                         `git ls-files -z`.split("\x0")
-                       end
+  spec.files         = ["lib/jekyll-esbuild.rb"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "jekyll", ">= 3.0"
