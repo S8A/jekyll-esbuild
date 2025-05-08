@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 require 'pathname'
-require "jekyll"
+require 'jekyll'
 require 'open3'
 
 module Jekyll
   module Esbuild
     class Engine
       def initialize(source, options = {})
-        Jekyll.logger.debug "JekyllEsbuild:",
+        Jekyll.logger.debug 'JekyllEsbuild:',
                             "Initializing engine with source:
                              #{source}, options: #{options}"
         @script = File.expand_path(options[:script] || 'node_modules/.bin/esbuild', source)
         unless File.exist?(@script)
-          Jekyll.logger.error "JekyllEsbuild:",
+          Jekyll.logger.error 'JekyllEsbuild:',
                               "#{@script} not found.
                                Make sure esbuild is installed in your
                                Jekyll source."
@@ -26,42 +26,38 @@ module Jekyll
       end
 
       def process(file_path)
-        Jekyll.logger.debug "JekyllEsbuild:", "Processing #{file_path}"
+        Jekyll.logger.debug 'JekyllEsbuild:', "Processing #{file_path}"
 
         node_env = ENV.fetch('NODE_ENV', 'development')
 
-        args = [@script, "#{file_path}", "--outfile=#{file_path}", "--allow-overwrite"]
+        args = [@script, file_path.to_s, "--outfile=#{file_path}", '--allow-overwrite']
         args << '--bundle' if @bundle
 
-        if @minify == 'always' || (@minify == 'environment' && node_env == 'production')
-          args << '--minify'
-        end
+        args << '--minify' if @minify == 'always' || (@minify == 'environment' && node_env == 'production')
 
-        if @sourcemap == 'always' || (@sourcemap == 'environment' && node_env == 'development')
-          args << "--sourcemap"
-        end
+        args << '--sourcemap' if @sourcemap == 'always' || (@sourcemap == 'environment' && node_env == 'development')
 
-        stdout, stderr, status = Open3.capture3(*args)
+        _, stderr, status = Open3.capture3(*args)
         unless status.success?
-          Jekyll.logger.error "JekyllEsbuild:", "Failed with error: #{stderr}"
+          Jekyll.logger.error 'JekyllEsbuild:', "Failed with error: #{stderr}"
           raise "Esbuild failed with status #{status.exitstatus}"
         end
 
-        Jekyll.logger.info "JekyllEsbuild:", "Processed #{file_path}"
+        Jekyll.logger.info 'JekyllEsbuild:', "Processed #{file_path}"
       end
     end
   end
 end
 
 Jekyll::Hooks.register :site, :post_write do |site|
-  Jekyll.logger.debug "JekyllEsbuild:", "Site post-write hook triggered."
+  Jekyll.logger.debug 'JekyllEsbuild:', 'Site post-write hook triggered.'
 
   engine = Jekyll::Esbuild::Engine.new(site.source, {
-    script: site.config.dig('esbuild', 'script'),
-    bundle: site.config.dig('esbuild', 'bundle'),
-    minify: site.config.dig('esbuild', 'minify'),
-    sourcemap: site.config.dig('esbuild', 'sourcemap')
-  })
+                                         script: site.config.dig('esbuild', 'script'),
+                                         bundle: site.config.dig('esbuild', 'bundle'),
+                                         minify: site.config.dig('esbuild', 'minify'),
+                                         sourcemap: site.config.dig('esbuild', 'sourcemap')
+                                       })
 
   files = site.config.dig('esbuild', 'files')
 
@@ -75,5 +71,5 @@ Jekyll::Hooks.register :site, :post_write do |site|
     engine.process(file_path)
   end
 
-  Jekyll.logger.debug "JekyllEsbuild:", "Site post-write hook completed."
+  Jekyll.logger.debug 'JekyllEsbuild:', 'Site post-write hook completed.'
 end
