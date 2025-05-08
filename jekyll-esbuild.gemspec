@@ -7,7 +7,10 @@ Gem::Specification.new do |spec|
   spec.email         = ['samuelochoap@proton.me']
 
   spec.summary       = 'A Jekyll plugin to process JavaScript files with esbuild.'
-  spec.description   = 'This plugin uses esbuild to process JavaScript files in a Jekyll site after the site is written.'
+  spec.description   = <<~DESCRIPTION
+    This plugin uses esbuild to process JavaScript files in a Jekyll site after
+    the site is built.
+  DESCRIPTION
   spec.homepage      = 'https://github.com/S8A/jekyll-esbuild'
   spec.license       = 'Unlicense'
   spec.metadata      = {
