@@ -2,14 +2,20 @@
 
 Gem::Specification.new do |spec|
   spec.name          = 'jekyll-esbuild'
-  spec.version       = '0.1.0'
+  spec.version       = '0.1.1'
   spec.authors       = ['Samuel Ochoa']
   spec.email         = ['samuelochoap@proton.me']
 
-  spec.summary       = 'A Jekyll plugin to process JavaScript files with esbuild.'
+  spec.summary       = 'Jekyll plugin for processing JavaScript files with esbuild.'
   spec.description   = <<~DESCRIPTION
-    This plugin uses esbuild to process JavaScript files in a Jekyll site after
-    the site is built.
+    This plugin uses esbuild to process the targeted JavaScript static
+    files in a Jekyll site whenever the site is built. By default, it
+    targets all static files with .js extension, but it can be
+    configured to target only the files specified in a list, which
+    also allows including files of other content types supported by
+    esbuild, such as TypeScript or JSX (still untested with this
+    plugin, however). There are also other options to toggle bundling,
+    minification, and source maps.
   DESCRIPTION
   spec.homepage      = 'https://github.com/S8A/jekyll-esbuild'
   spec.license       = 'Unlicense'
