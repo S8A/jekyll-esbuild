@@ -13,9 +13,15 @@ Gem::Specification.new do |spec|
   DESCRIPTION
   spec.homepage      = 'https://github.com/S8A/jekyll-esbuild'
   spec.license       = 'Unlicense'
-  spec.metadata      = {
-    'license' => 'https://unlicense.org/'
-  }
+
+  if spec.respond_to?(:metadata)
+    spec.metadata['license'] = 'https://unlicense.org/'
+    spec.metadata['homepage_uri'] = spec.homepage
+    spec.metadata['source_code_uri'] = spec.homepage
+  else
+    raise 'RubyGems 2.0 or newer is required to protect against ' \
+          'public gem pushes.'
+  end
 
   spec.files         = ['lib/jekyll-esbuild.rb']
   spec.require_paths = ['lib']
